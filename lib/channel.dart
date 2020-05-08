@@ -1,4 +1,4 @@
-import 'dart:js';
+
 
 import 'fave_reads.dart';
 import 'controller/reads_controller.dart';
@@ -20,7 +20,7 @@ class FaveReadsChannel extends ApplicationChannel {
     logger.onRecord.listen((rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
 
     final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
-    final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo('dart', 'dart', 'localhost', 5432, 'fave_reads_official');
+    final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo('fave_reads_user', 'password', 'localhost', 5433, 'fave_reads_official');
     context = ManagedContext(dataModel, persistentStore);
   }
 
