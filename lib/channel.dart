@@ -1,11 +1,14 @@
+import 'dart:js';
+
 import 'fave_reads.dart';
-import 'reads_controller.dart';
+import 'controller/reads_controller.dart';
 
 /// This type initializes an application.
 ///
 /// Override methods in this class to set up routes and initialize services like
 /// database connections. See http://aqueduct.io/docs/http/channel/.
 class FaveReadsChannel extends ApplicationChannel {
+  ManagedContext context;
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]
@@ -15,6 +18,10 @@ class FaveReadsChannel extends ApplicationChannel {
   @override
   Future prepare() async {
     logger.onRecord.listen((rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
+
+    final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
+    final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo('dart', 'dart', 'localhost', 5432, 'fave_reads_official');
+    context = ManagedContext(dataModel, persistentStore);
   }
 
   /// Construct the request channel.
@@ -44,7 +51,7 @@ class FaveReadsChannel extends ApplicationChannel {
     });
 
 
-    router.route('/reads/[:id]').link(() => ReadsController());
+    router.route('/reads/[:id]').link(() => ReadsController(context));
 
     return router;
   }
